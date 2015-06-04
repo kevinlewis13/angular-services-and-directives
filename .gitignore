@@ -1,0 +1,6 @@
+**/node_modules/
+.jshintrc
+**/db/
+**/*.log
+**/build/
+**/bundle.js

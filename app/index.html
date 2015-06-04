@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8'>
+    <title>Library</title>
+  </head>
+  <body data-ng-app="booksApp">
+    <main data-ng-controller="booksController" data-ng-init="getAll()">
+
+      <h1>Book Shelf</h1>
+
+      <aside data-ng-if="errors.length">
+        <h2>Errors:</h2>
+        <ul data-ng-repeat="error in errors">
+          <li>{{error.msg}}</li>
+        </ul>
+        <button data-ng-click="clearErrors()">Clear All Errors</button>
+      </aside>
+
+      <form name="newBookForm" data-ng-submit="createNewBook(newBook)">
+        <input type="text" required placeholder="title" data-ng-model="newBook.title">
+        <input type="text" required placeholder="author" data-ng-model="newBook.author">
+        <button type="submit" data-ng-disabled="newBookForm.$invalid">Add a new Book</button>
+      </form>
+
+      <ul data-ng-repeat="book in books">
+        <li>{{book.title}}, by {{book.author}} <!--this might need work -->
+          <button data-ng-click="deleteBook(book)">Delete</button>
+          <button data-ng-if="!book.editing" data-ng-click="startEdit(book)">Edit</button>
+
+          <form name="{{'editing' + book._id}}" data-ng-if="book.editing" data-ng-submit="saveBook(book)">
+            <input type="text" placeholder="title" data-ng-model="book.title">
+            <input type="text" placeholder="author" data-ng-model="book.author">
+            <button type="submit">Save your changes</button>
+            <button data-ng-click="cancelEdit(book)">Cancel</button>
+          </form>
+
+        </li>
+      </ul>
+
+    </main>
+    <script src='bundle.js'></script>
+  </body>
+</html>
