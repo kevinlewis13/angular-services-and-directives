@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 
 var bookSchema = mongoose.Schema({
   title: {type: String, required: true},
-  author: String,
+  author: {type: String, required: true},
   hardcover: String,
   purchase: {
     location: String,

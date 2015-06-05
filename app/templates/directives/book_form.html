@@ -1,0 +1,7 @@
+<form name="bookForm" data-ng-submit="save({book: book})">
+  <label>{{labelText}}</label>
+  <input required type="text" placeholder="title" data-ng-model="book.title">
+  <input required type="text" placeholder="author" data-ng-model="book.author">
+  <button type="submit" data-ng-disabled="bookForm.$invalid">{{buttonText}}</button>
+  <div data-ng-transclude></div>
+</form>

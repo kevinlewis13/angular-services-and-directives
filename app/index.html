@@ -17,23 +17,25 @@
         <button data-ng-click="clearErrors()">Clear All Errors</button>
       </aside>
 
-      <form name="newBookForm" data-ng-submit="createNewBook(newBook)">
-        <input type="text" required placeholder="title" data-ng-model="newBook.title">
-        <input type="text" required placeholder="author" data-ng-model="newBook.author">
-        <button type="submit" data-ng-disabled="newBookForm.$invalid">Add a new Book</button>
-      </form>
+      <div data-book-form-directive
+           data-save="createNewBook(book)"
+           data-button-text="'Add book to your shelf'"
+           data-label-text="Add a Book">
+      </div>
 
       <ul data-ng-repeat="book in books">
         <li>{{book.title}}, by {{book.author}} <!--this might need work -->
-          <button data-ng-click="deleteBook(book)">Delete</button>
-          <button data-ng-if="!book.editing" data-ng-click="startEdit(book)">Edit</button>
+          <button data-ng-disabled="!book._id" data-ng-click="deleteBook(book)">Delete</button>
+          <button data-ng-if="!book.editing" data-ng-disabled="!book._id" data-ng-click="startEdit(book)">Edit</button>
 
-          <form name="{{'editing' + book._id}}" data-ng-if="book.editing" data-ng-submit="saveBook(book)">
-            <input type="text" placeholder="title" data-ng-model="book.title">
-            <input type="text" placeholder="author" data-ng-model="book.author">
-            <button type="submit">Save your changes</button>
+          <div data-book-form-directive
+               data-save="saveBook(book)"
+               data-button-text="'Save Changes'"
+               data-label-text="Editing: "
+               data-book="book"
+               data-ng-if="book.editing">
             <button data-ng-click="cancelEdit(book)">Cancel</button>
-          </form>
+          </div>
 
         </li>
       </ul>
