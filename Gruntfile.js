@@ -11,11 +11,47 @@ module.exports = function(grunt) {
   grunt.initConfig({
 
     jshint: {
-      dev: {
-        src: ['Gruntfile.js', 'server.js', 'models/**/*.js', 'app/**/*.js', 'routes/**/*.js', 'test/**/*test.js']
+      jasmine: {
+        src: ['test/client/karma_tests/*test.js'],
+        options: {
+          globals: {
+            angular: true,
+            describe: true,
+            it: true,
+            before: true,
+            beforeEach: true,
+            after: true,
+            afterEach: true,
+            expect: true
+          }
+        }
+      },
+      mocha: {
+        src: ['test/server/*test.js', 'test/client/*test.js'],
+        options: {
+          globals: {
+            describe: true,
+            it: true,
+            before: true,
+            beforeEach: true,
+            after: true,
+            afterEach: true
+          }
+        }
+      },
+      server: {
+        src: ['Gruntfile.js', 'server.js', 'models/**/*.js', 'routes/**/*.js']
+      },
+      client: {
+        src: ['app/**/*.js'],
+        options: {
+          globals: {
+            angular: true
+          }
+        }
       },
       options: {
-        jshintrc: true
+        node: true
       }
     },
 
@@ -31,11 +67,11 @@ module.exports = function(grunt) {
         entry: __dirname + '/test/client/test.js',
         output: {
           path: 'test/client/',
-          file: 'test_bundle.js'
+          file: 'bundle.js'
         }
       },
       karma_test: {
-        entry: __dirname + '/test/karma_tests/test_entry.js',
+        entry: __dirname + '/test/client/karma_tests/test_entry.js',
         output: {
           path: 'test/karma_tests/',
           file: 'bundle.js'
@@ -63,6 +99,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build:dev', ['webpack:client', 'copy:html']);
   grunt.registerTask('build:test', ['webpack:test', 'webpack:karma_test']);
-  grunt.registerTask('build', ['build:dev', 'build:test']);
-  grunt.registerTask('linter', ['jshint:dev']);
+  grunt.registerTask('build', ['build:dev']);
+  grunt.registerTask('linter', ['jshint']);
 };

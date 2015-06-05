@@ -1,51 +1,44 @@
 'use strict';
 
 module.exports = function(app) {
-  app.controller('booksController', ['$scope', '$http', function($scope, $http) {
+  app.controller('booksController', ['$scope', 'RESTResource', 'copy', function($scope, resource, copy) {
+    var Book = resource('books');
     $scope.errors = [];
     $scope.books = [];
 
     $scope.getAll = function() {
-      $http.get('/api/books')
-        .success(function (data) {
-          $scope.books = data;
-        })
-        .error(function (error) {
-          console.log(error);
-          $scope.errors.push({msg: 'error retrieving books'});
-        });
+      Book.getAll(function(err, data) {
+        if (err) return $scope.errors.push({msg: 'error stocking shelf'});
+        $scope.books = data;
+      });
     };
 
-    $scope.createNewBook = function(newBook) {
-      $scope.books.push(newBook);
+    $scope.createNewBook = function(book) {
+      $scope.books.push(book);
       //EITHER:
-      var submitBook = $scope.newBook;
-      $scope.newBook = null;
-      $http.post('/api/books', submitBook) //could I just pass newBook in here? check.
-        .error(function (error) {
-          console.log(error);
-          $scope.errors.push({msg: 'could not create new book'});
-        });
+      var submitBook = copy(book);
+      book.title = '';
+      book.author = '';
+      Book.create(submitBook, function(err, data) {
+        if (err) return $scope.errors.push({msg: 'could not add new book'});
+        $scope.books.splice($scope.books.indexOf(submitBook), 1, data);
+      });
       // OR:
       //$scope.newBook = null;
     };
 
     $scope.saveBook = function(book) {
       book.editing = false;
-      $http.put('/api/books/' + book._id, book)
-        .error(function (error) {
-          console.log(error);
-          $scope.errors.push({msg: 'could not update book'});
-        });
+      Book.save(book, function(err, data) {
+        if (err) return $scope.errors.push({msg: 'could not update book'});
+      });
     };
 
     $scope.deleteBook = function(book) {
       $scope.books.splice($scope.books.indexOf(book), 1);
-      $http.delete('/api/books/' + book._id)
-        .error(function (error) {
-          console.log(error);
-          $scope.errors.push({msg: 'could not delete book: ' + book.title});
-        });
+      Book.remove(book, function(err, data) {
+        if (err) $scope.errors.push({msg: 'could not remove book: ' + book.title});
+      });
     };
 
     $scope.clearErrors = function() {

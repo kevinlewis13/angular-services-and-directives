@@ -1,6 +1,6 @@
 'use strict';
 
-require('../../app/js/client');
+require('../../../app/js/client');
 require('angular-mocks');
 
 describe('books controller', function() {
@@ -48,17 +48,18 @@ describe('books controller', function() {
       $scope.getAll();
       $httpBackend.flush();
       expect($scope.errors.length).toBe(1);
-      expect($scope.errors[0].msg).toBe('error retrieving books');
+      expect($scope.errors[0].msg).toBe('error stocking shelf');
     });
 
     it('should be able to save a new book', function() {
-      $scope.newBook = {_id: 2, title: 'test title2', author: 'test author2'};
+      var book = {title: 'test title2', author: 'test author2'};
       $httpBackend.expectPOST('/api/books').respond(200, {_id: 2, title: 'test title2', author: 'test author2'});
-      $scope.createNewBook($scope.newBook);
+      $scope.createNewBook(book);
       $httpBackend.flush();
       expect($scope.books[0].title).toBe('test title2');
       expect($scope.books[0]._id).toBe(2);
-      expect($scope.newBook).toBe(null);
+      expect(book.title).toBe('');
+      expect(book.author).toBe('');
       expect($scope.errors.length).toBe(0);
     });
 
@@ -84,7 +85,7 @@ describe('books controller', function() {
       expect($scope.books.indexOf(book)).toBe(-1);
       $httpBackend.flush();
       expect($scope.errors.length).toBe(1);
-      expect($scope.errors[0].msg).toBe('could not delete book: ' + book.title);
+      expect($scope.errors[0].msg).toBe('could not remove book: ' + book.title);
     });
 
     it('should update a book with edit', function() {
